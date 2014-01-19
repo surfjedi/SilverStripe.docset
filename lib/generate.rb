@@ -13,7 +13,7 @@ module SilverStripeDocset
 
     def initialize(opts)
       @base = File.expand_path("../../", __FILE__)
-      @working = @base + "_working"
+      @working = File.join(@base, "_working")
 
       @use_working = opts[:use_working]
 
@@ -29,10 +29,10 @@ module SilverStripeDocset
     end
 
     def run
-      # @api.run(@use_working)
+      @api.run(@use_working)
       @doc.run(@use_working)
 
-      # produce_release()
+      produce_release()
     end
 
     def contents_path
@@ -48,7 +48,7 @@ module SilverStripeDocset
     end
 
     def produce_release
-      system "tar --exclude='.DS_Store' -cvzf ../SilverStripe.docset.tgz #{working}/SilverStripe.docset"
+      system "tar --exclude='.DS_Store' -cvzf #{working}/SilverStripe.docset.tgz #{working}/SilverStripe.docset"
     end
 
     def setup_docset
@@ -56,11 +56,15 @@ module SilverStripeDocset
 
       FileUtils.mkdir_p "#{documents_path}"
 
-      ["Info.plist", "icon.png"].each do |f|
+      ["Info.plist"].each do |f|
         FileUtils.cp "#{base}/#{f}", "#{contents_path}/#{f}"
       end
 
-      ["index.html", "icon.png", "style.css"] do |f|
+      [ "icon.png"].each do |f|
+        FileUtils.cp "#{base}/#{f}", "#{working}/SilverStripe.docset/#{f}"
+      end
+      
+      ["index.html", "icon.png", "style.css"].each do |f|
         FileUtils.cp "#{base}/#{f}", "#{documents_path}/#{f}"
       end
     end
