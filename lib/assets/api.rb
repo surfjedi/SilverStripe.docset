@@ -11,6 +11,8 @@ module SilverStripeDocset
       @repo = "https://github.com/silverstripe/api.silverstripe.org.git"
       @folder = "api"
 
+      @release_branch = "master" # one api branch
+
       super
     end
 
@@ -21,7 +23,7 @@ module SilverStripeDocset
     end
 
     def bundle
-      system "rsync --delete -rv #{assets_tmp}/htdocs/3.1/ #{release_folder}"
+      system "rsync --delete -rv #{assets_tmp}/htdocs/#{release_version}/ #{release_folder}"
     end
 
     def index
@@ -30,9 +32,13 @@ module SilverStripeDocset
 
         name = doc.css("h1").first.content.sub('Class ', "").strip()
         path = item.sub("#{release_folder}", "").sub("/", "").strip()
-
+        path = 
         # add the class
-        @db.execute("INSERT OR IGNORE INTO searchIndex(name, type, path) VALUES (?,?,?)", name, "Class", path )
+        @db.execute("INSERT OR IGNORE INTO searchIndex(name, type, path) VALUES (?,?,?)", 
+          name, 
+          "Class", 
+          File.join(@folder, path) 
+        )
 
         # add the methods
         doc.css('#methods .name code a').each do |link|
@@ -40,7 +46,7 @@ module SilverStripeDocset
             @db.execute("INSERT OR IGNORE INTO searchIndex(name, type, path) VALUES (?,?,?)", 
               link.content, 
               "Method", 
-              "api/"+ link[:href] 
+              File.join(@folder, link[:href])
             )
           end
         end
@@ -51,7 +57,7 @@ module SilverStripeDocset
             @db.execute("INSERT OR IGNORE INTO searchIndex(name, type, path) VALUES (?,?,?)", 
               link.content, 
               "Property", 
-              "api/"+ link[:href] 
+              File.join(@folder, link[:href])
             )
           end
         end

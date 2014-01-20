@@ -8,6 +8,8 @@ module SilverStripeDocset
     def initialize(working, db)
       @working_dir = working
       @release_version = '3.1'
+      @release_branch = @release_version
+      
       @assets_tmp = "#{working_dir}/#{folder}"
 
       @db = db
@@ -25,7 +27,7 @@ module SilverStripeDocset
   
     def fetch
       if File.exists? "#{assets_tmp}"
-        if not system "cd #{assets_tmp} && git fetch origin && git reset --hard origin/master"
+        if not system "cd #{assets_tmp} && git fetch origin && git reset --hard origin/#{release_branch}"
           raise "Could not update folder."
         end
       else
