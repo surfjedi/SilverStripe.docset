@@ -33,10 +33,21 @@ module SilverStripeDocset
     def index
       Dir.glob("#{release_folder}/**/*.html") do |item|
         doc = Nokogiri::HTML(open(item))
-        name = doc.css("h1").first.content
+
+        title = doc.css("#content h1").first
+
+        if not title
+          title = doc.css('title').first
+        end
+        
+        name = title.content
         path = item.sub("#{release_folder}", "").sub("/", "").strip()
 
-        @db.execute("INSERT OR IGNORE INTO searchIndex(name, type, path) VALUES (?,?,?)", name, "Guide", path )
+        @db.execute("INSERT OR IGNORE INTO searchIndex(name, type, path) VALUES (?,?,?)", 
+          name, 
+          "Guide", 
+          File.join(@folder, path) 
+        )
       end
     end
   end
