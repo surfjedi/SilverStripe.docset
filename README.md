@@ -5,7 +5,13 @@ SilverStripe Docset for [Dash](http://kapeli.com/).
 This docset contains both the api.silverstripe.org documentation and written 
 documentation from doc.silverstripe.org in a searchable archive. 
 
-Ensure you have all the required dependencies:
+To add the latest documentation use the following export (which will be kept
+relatively up to date through a weekly cron job).
+
+	http://fullscreen.io/feeds/SilverStripe.docset.tgz
+
+If you want to generate the documentation yourself, or need to add additional
+modules, ensure that you have all the required dependencies:
 
 	make setup
 
@@ -27,5 +33,8 @@ the git update.
 ## Todo
 
 [ ] Support multiple versions (3.1 / 3.2)
+[ ] Document / explain how to add custom modules to local version
+[ ] Resolve styling issues with both SilverStripe sites / including a responsive
+stylesheet for smaller displays
 
 
